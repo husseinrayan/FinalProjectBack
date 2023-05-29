@@ -4,6 +4,10 @@ const { Schema, model } = mongoose;
 
 const productSchema = new Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     name: {
       type: String,
       required: [true, "Provide a Name for the product"],
@@ -15,6 +19,10 @@ const productSchema = new Schema(
     image: {
       type: String,
       // required: [true, "Please upload a picture for the product"],
+    },
+    isTaken: {
+      type: Boolean,
+      default: false,
     },
     // price: {
     //   type: Number,
@@ -32,6 +40,11 @@ const productSchema = new Schema(
   }
 );
 productSchema.plugin(mongoosePaginate);
+
+productSchema.pre(["find", "findOne"], function () {
+  this.populate("user");
+});
+
 productSchema.pre(["find", "findOne"], function () {
   this.populate("category");
 });

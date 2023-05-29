@@ -4,6 +4,7 @@ import mongoosePaginate from "mongoose-paginate-v2";
 
 const trainingSchema = new Schema(
   {
+    
     title: {
       type: String,
       required: [true, "Please enter a title"],

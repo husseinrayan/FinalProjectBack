@@ -9,6 +9,7 @@ router.get("/:id", controller.getProductById);
 
 router.post("/", uploadImage.uploadImage, controller.post);
 router.put("/:id", uploadImage.uploadImage, controller.put);
+router.patch('/isTaken/:id', controller.handleTaken)
 router.delete("/:id", controller.deleteOne);
 
 export default router;

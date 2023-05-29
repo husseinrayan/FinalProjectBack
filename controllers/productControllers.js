@@ -1,11 +1,12 @@
 import Product from "../models/productModel.js";
 import fs from "fs";
 import Category from "../models/categoryModel.js";
+import User from "../models/userModel.js";
 // import uploadImage from "../middleware/image.js";
 
 export async function getAll(req, res, next) {
   try {
-  const { page, limit } = req.query;
+    const { page, limit } = req.query;
 
     const pageNumber = parseInt(page);
     const limitNumber = parseInt(limit);
@@ -48,6 +49,11 @@ export async function post(req, res, next) {
   try {
     const { name, description, image, price } = req.body;
 
+    const user = await User.findById(req.body.user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const category = await Category.findById(req.body.category);
     console.log(category);
     if (!category) {
@@ -60,6 +66,7 @@ export async function post(req, res, next) {
       image: image,
       category: category._id,
       price: price,
+      user: user._id,
     });
 
     return res.status(201).json({ product });
@@ -80,6 +87,21 @@ export async function put(req, res, next) {
     res.status(200).send({ success: true, response });
   } catch (err) {
     console.log(err);
+    return next(err);
+  }
+}
+
+export async function handleTaken(req, res, next) {
+  let { id } = req.params;
+  const { isTaken } = req.body;
+  try {
+    const response = await Product.findByIdAndUpdate(
+      { _id: id },
+      { isTaken: isTaken },
+      { new: true }
+    );
+    res.status(200).send({ success: true, response });
+  } catch (err) {
     return next(err);
   }
 }
@@ -113,6 +135,7 @@ const controller = {
   getProductById,
   put,
   deleteOne,
+  handleTaken,
 };
 
 export default controller;
