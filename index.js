@@ -42,7 +42,7 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/product", productRoutes);
 app.use("/", protectedRoutes);
 app.use("/api/order", orderRoutes);
-app.use("/api/donation", trainingRoutes);
+app.use("/api/training", trainingRoutes);
 app.listen(
   PORT,
   console.log(`Server is running in ${process.env.NODE_ENV} on port ${PORT}!`)
