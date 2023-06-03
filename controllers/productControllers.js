@@ -47,26 +47,28 @@ export async function getProductById(req, res) {
 //add admin
 export async function post(req, res, next) {
   try {
-    const { name, description, image, price } = req.body;
+    const { name, description, image, price, user } = req.body;
 
-    const user = await User.findById(req.body.user);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    if (user) {
+      const existingUser = await User.findById(user);
+      if (!existingUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
     }
 
     const category = await Category.findById(req.body.category);
     console.log(category);
     if (!category) {
-      return res.status(404).json({ message: "category not found" });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     const product = await Product.create({
-      name: name,
-      description: description,
-      image: image,
+      name,
+      description,
+      image,
       category: category._id,
-      price: price,
-      user: user._id,
+      price,
+      user: user ? user._id : null,
     });
 
     return res.status(201).json({ product });
@@ -74,6 +76,7 @@ export async function post(req, res, next) {
     return res.status(400).send(err.message);
   }
 }
+
 
 export async function put(req, res, next) {
   let { id } = req.params;
